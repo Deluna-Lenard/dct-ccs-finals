@@ -1,18 +1,18 @@
 <?php
 session_start();
-require_once 'functions.php'; // Include functions.php
+require_once 'functions.php'; // Include external functions
 
-// Check if the user is already logged in, redirect to dashboard
+// Redirect to dashboard if already logged in
 
-if (isset($_POST['login'])) {
-    $email = postData('email'); // Get the email from POST data
-    $password = postData('password'); // Get the password from POST data
 
-    // Attempt to login using the login function
-    login($email, $password);
+// Handle login form submission
+$email = $password = ""; // Initialize variables
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
+    $email = postData('email');
+    $password = postData('password');
+    login($email, $password); // Attempt to login
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,29 +24,39 @@ if (isset($_POST['login'])) {
     <title>Login</title>
 </head>
 
-<body class="bg-secondary-subtle">
+<body class="bg-light">
     <div class="d-flex align-items-center justify-content-center vh-100">
-        <div class="col-3">
-        <?php
-            // Display validation errors if any
-            echo displayErrors($errors ?? []);
-            ?>
-            <!-- Server-Side Validation Messages should be placed here -->
-            <div class="card">
+        <div class="col-md-4">
+            <!-- Validation and alert messages -->
+            <?php if (!empty($errors)) echo displayErrors($errors); ?>
+
+            <div class="card shadow-sm">
                 <div class="card-body">
-                    <h1 class="h3 mb-4 fw-normal">Login</h1>
-                    <form method="post">
+                    <h1 class="h3 mb-4 text-center">Login</h1>
+                    <form method="post" novalidate>
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="email" name="email" placeholder="user1@example.com" value="<?php echo htmlspecialchars($email ?? ''); ?>">
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                id="email" 
+                                name="email" 
+                                placeholder="user@example.com" 
+                                value="<?php echo htmlspecialchars($email); ?>" 
+                                required>
                             <label for="email">Email address</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" value="<?php echo htmlspecialchars($password ?? ''); ?>">
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="password" 
+                                name="password" 
+                                placeholder="Password" 
+                                value="<?php echo htmlspecialchars($password); ?>" 
+                                required>
                             <label for="password">Password</label>
                         </div>
-                        <div class="form-floating mb-3">
-                            <button type="submit" name="login" class="btn btn-primary w-100">Login</button>
-                        </div>
+                        <button type="submit" name="login" class="btn btn-primary w-100">Login</button>
                     </form>
                 </div>
             </div>
